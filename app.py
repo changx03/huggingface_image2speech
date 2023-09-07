@@ -24,6 +24,8 @@ from transformers import BlipForConditionalGeneration, BlipProcessor
 # Load Token
 load_dotenv(find_dotenv())
 
+MAX_TOKENS = os.getenv('MAX_TOKENS', 50)
+
 
 def image2txt(input_img):
     """Generate text with a given image's URL."""
@@ -43,7 +45,7 @@ def image2txt(input_img):
     return text
 
 
-def text2story(text):
+def text2story(text, max_tokens=MAX_TOKENS):
     """Using a LLM to generate a story."""
 
     template = """
@@ -54,7 +56,7 @@ def text2story(text):
     promote = PromptTemplate(template=template, input_variables=['scenario'])
 
     story_llm = LLMChain(
-        llm=OpenAI(model='text-curie-001', temperature=1, max_tokens=50),
+        llm=OpenAI(model='text-curie-001', temperature=1, max_tokens=MAX_TOKENS),
         prompt=promote,
         verbose=True,
     )
@@ -83,6 +85,9 @@ def text2speech(text, path_output='story.flac'):
 
 def main():
     """Create a main page for users to upload image"""
+    if not os.path.exists('outputs'):
+        os.mkdir('outputs')
+
     st.set_page_config(page_title='Image 2 Audio')
     st.header('From an image to an audio story')
     uploaded_file = st.file_uploader('Choose an image...', type=['jpg', 'png'])
