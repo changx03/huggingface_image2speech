@@ -1,0 +1,11 @@
+fairseq
+g2p-en
+langchain
+openai
+Pillow
+python-dotenv
+requests
+soundfile
+streamlit
+torch
+transformers
