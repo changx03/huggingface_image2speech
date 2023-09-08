@@ -49,18 +49,18 @@ def text2story(text, max_tokens=MAX_TOKENS):
     """Using a LLM to generate a story."""
 
     template = """
-    You are a story teller. You can generate a short story based on a simple narrative, the story should be no more than 20 words.
+    You are a story teller. You can generate a short story based on a simple narrative, the story should be no more than {num_words} words.
     CONTEXT: {scenario}
     STORY:
     """
-    promote = PromptTemplate(template=template, input_variables=['scenario'])
+    promote = PromptTemplate(template=template, input_variables=['scenario', 'num_words'])
 
     story_llm = LLMChain(
         llm=OpenAI(model='text-curie-001', temperature=1, max_tokens=MAX_TOKENS),
         prompt=promote,
         verbose=True,
     )
-    story = story_llm.predict(scenario=text)
+    story = story_llm.predict(scenario=text, num_words=MAX_TOKENS)
     return story
 
 
